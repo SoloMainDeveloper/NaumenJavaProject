@@ -4,11 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.solomein_michael.NauJava.Game.Game;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Component
-public class GameRepository implements CrudRepository<Game, Long> {
+public class GameRepository implements CrudRepository<Game, String> {
     private final List<Game> games;
 
     @Autowired
@@ -18,32 +17,58 @@ public class GameRepository implements CrudRepository<Game, Long> {
 
     @Override
     public void create(Game game) {
+        game.setId((long)games.size());
         games.add(game);
     }
 
     @Override
-    public Game read(Long id) {
-        for(var game : games){
-            if(Objects.equals(game.getId(), id))
-                return game;
+    public Optional<Game> read(String gameId) {
+        ArrayList<Game> snapshotsOfGame = new ArrayList<>();
+        for(var i = 0; i < games.size(); i++){
+            if(Objects.equals(games.get(i).getGameId(), gameId))
+                snapshotsOfGame.add(games.get(i));
         }
-        return null;
+        return snapshotsOfGame.stream().max(Comparator.comparing(Game::getId));
+    }
+
+    public Optional<Game> read(Long id) {
+        for(var i = 0; i < games.size(); i++){
+            if(Objects.equals(games.get(i).getId(), id))
+                return Optional.of(games.get(i));
+        }
+        return Optional.empty();
     }
 
     @Override
     public void update(Game updatedGame) {
-        var id = updatedGame.getId();
-        for(var game : games){
-            if(Objects.equals(game.getId(), id))
-                game = updatedGame;
-        }
+        create(updatedGame);
+//        var id = updatedGame.getId();
+//        for(var i = 0; i < games.size(); i++){
+//            if(Objects.equals(games.get(i).getId(), id))
+//                games.set(i, updatedGame);
+//        }
     }
 
     @Override
-    public void delete(Long id) {
-        for(var game : games){
-            if(Objects.equals(game.getId(), id))
+    public void deleteByGameId(String gameId) {
+        var count = 0;
+        for(var game: games){
+            if(Objects.equals(game.getGameId(), gameId)){
                 games.remove(game);
+                count++;
+            }
         }
+        if(count == 0)
+            throw new RuntimeException("Game с gameId=" + gameId + " не была удалена");
+    }
+
+    public void deleteGameSnapshot(Long id){
+        for(var i = 0; i < games.size(); i++){
+            if(Objects.equals(games.get(i).getId(), id)){
+                games.remove(i);
+                return;
+            }
+        }
+        throw new RuntimeException("Game Snapshot с id=" + id + " не был удален");
     }
 }

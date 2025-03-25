@@ -23,27 +23,52 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void createGame(Long id, String playerName) {
-        var game = new Game(id, playerName);
-        gameRepository.create(game);
+    public void createGame(String gameId, String playerName) {
+        var snap = gameRepository.read(gameId);
+        if(snap.isEmpty()) {
+            gameRepository.create(new Game(gameId, playerName));
+        }
+        else {
+            throw new RuntimeException("Игра с таким gameId уже существует. Измените имя");
+        }
     }
 
     @Override
-    public Game findById(Long id) {
-        return gameRepository.read(id);
+    public Game findLastByGameId(String gameId) {
+        return gameRepository.read(gameId).orElseThrow(() -> GameNotFoundException(gameId));
+    }
+
+    public Game findGameSnapshotById(Long id) {
+        return gameRepository.read(id).orElseThrow(() -> GameNotFoundException(id));
+    }
+
+    private RuntimeException GameNotFoundException(String gameId) {
+        return new RuntimeException("Game not found, gameId=" + gameId);
+    }
+
+    private RuntimeException GameNotFoundException(Long id) {
+        return new RuntimeException("Game snapshot with id=" + id + " not found");
     }
 
     @Override
-    public void deleteById(Long id) {
-        gameRepository.delete(id);
+    public void deleteByGameId(String gameId) {
+        gameRepository.deleteByGameId(gameId);
+    }
+
+    public void deleteGameSnapshotById(Long id){
+        gameRepository.deleteGameSnapshot(id);
     }
 
     @Override
-    public boolean updateGameWithPlayerMove(Long id, String direction) {
-        var game = findById(id);
-        var status = game.tryMovePlayer(Game.Direction.valueOf(direction));
-        gameRepository.update(game);
-        return status;
+    public Game updateGameWithPlayerMove(Long id, String direction) {
+        var game = findGameSnapshotById(id);
+        var copy = game.deepCopy();
+        var status = copy.tryMovePlayer(Game.Direction.valueOf(direction));
+        if(status){
+            gameRepository.update(copy);
+            return copy;
+        }
+        return game;
     }
 
     @PostConstruct

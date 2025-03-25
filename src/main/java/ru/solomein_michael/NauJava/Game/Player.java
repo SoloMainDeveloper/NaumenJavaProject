@@ -11,6 +11,10 @@ public class Player {
         this.posY = posY;
     }
 
+    public Player deepCopy(){
+        return new Player(name, posX, posY);
+    }
+
     public String getName() {
         return name;
     }
