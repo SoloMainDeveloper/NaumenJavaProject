@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+/.gitattributes
+/.mvn/wrapper/maven-wrapper.properties
+/mvnw
+/mvnw.cmd
+/pom.xml
+/src/test/java/ru/solomein_michael/NauJava/NauJavaApplicationTests.java
