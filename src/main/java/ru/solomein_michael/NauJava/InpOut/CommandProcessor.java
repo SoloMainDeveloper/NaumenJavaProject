@@ -2,7 +2,7 @@ package ru.solomein_michael.NauJava.InpOut;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.solomein_michael.NauJava.Game.Game;
+import ru.solomein_michael.NauJava.Game.GameEntity;
 import ru.solomein_michael.NauJava.Service.GameServiceImpl;
 
 import java.util.Objects;
@@ -10,7 +10,7 @@ import java.util.Objects;
 @Component
 public class CommandProcessor {
     private final GameServiceImpl gameService;
-    private Game currentGame;
+    private GameEntity currentGame;
     private boolean isGameStarted;
 
     @Autowired
@@ -69,13 +69,13 @@ public class CommandProcessor {
                 System.out.println("Игра была завершена.");
             }
             case "move" -> {
-                var updatedGame = gameService.updateGameWithPlayerMove(currentGame.getId(), cmd[1]);
-                if(Objects.equals(currentGame, updatedGame)){
-                    System.out.println("Движение в данном направлении невозможно.");
-                } else {
-                    currentGame = updatedGame;
-                    System.out.println("Игрок сместился " + cmd[1] + ". Текущее положение: " + currentGame.getPlayer().getPosX() + ", " + currentGame.getPlayer().getPosY());
-                }
+//                var updatedGame = gameService.updateGameWithPlayerMove(currentGame.getId(), cmd[1]);
+//                if(Objects.equals(currentGame, updatedGame)){
+//                    System.out.println("Движение в данном направлении невозможно.");
+//                } else {
+//                    currentGame = updatedGame;
+//                    System.out.println("Игрок сместился " + cmd[1] + ". Текущее положение: " + currentGame.getPlayer().getPosX() + ", " + currentGame.getPlayer().getPosY());
+//                }
 
             }
             default -> System.out.println("Введена неизвестная команда...");
