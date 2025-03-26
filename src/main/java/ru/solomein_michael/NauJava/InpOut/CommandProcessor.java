@@ -69,14 +69,13 @@ public class CommandProcessor {
                 System.out.println("Игра была завершена.");
             }
             case "move" -> {
-//                var updatedGame = gameService.updateGameWithPlayerMove(currentGame.getId(), cmd[1]);
-//                if(Objects.equals(currentGame, updatedGame)){
-//                    System.out.println("Движение в данном направлении невозможно.");
-//                } else {
-//                    currentGame = updatedGame;
-//                    System.out.println("Игрок сместился " + cmd[1] + ". Текущее положение: " + currentGame.getPlayer().getPosX() + ", " + currentGame.getPlayer().getPosY());
-//                }
-
+                var updatedGame = gameService.updateGameWithPlayerMove(currentGame.getId(), cmd[1]);
+                if(Objects.equals(currentGame.getId(), updatedGame.getId())){
+                    System.out.println("Движение в данном направлении невозможно.");
+                } else {
+                    currentGame = updatedGame;
+                    System.out.println("Игрок сместился " + cmd[1] + ". Текущее положение: " + currentGame.getPlayer().getPosX() + ", " + currentGame.getPlayer().getPosY());
+                }
             }
             default -> System.out.println("Введена неизвестная команда...");
         }

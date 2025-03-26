@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.solomein_michael.NauJava.Game.*;
+import ru.solomein_michael.NauJava.Repository.GameEntityRepository;
+import ru.solomein_michael.NauJava.Repository.PlayerRepository;
+import ru.solomein_michael.NauJava.Repository.WorldRepository;
 //import ru.solomein_michael.NauJava.Repository.GameRepository;
 
-import java.util.Comparator;
 
 @Service
 public class GameServiceImpl implements GameService {
@@ -30,18 +32,15 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void createGame(String gameId, String playerName) {
-        var player = new Player(playerName, 0, 0);
-        playerRepository.save(player);
-        var world = new World(new MapCell[3][3]);
-        worldRepository.save(world);
-        gameEntityRepository.save(new GameEntity(gameId, player, world));
-   //     var snap = gameEntityRepository.findByGameId(gameId);.toGame();
-//        if(snap.isEmpty()) {
-//            gameRepository.create(new Game(gameId, playerName));
-//        }
-//        else {
-//            throw new RuntimeException("Игра с таким gameId уже существует. Измените имя");
-//        }
+        var snap = gameEntityRepository.findOneByGameId(gameId);
+        if(snap == null) {
+            var player = new Player(playerName, 0, 0);
+            var world = new World(new MapCell[3][3]);
+            gameEntityRepository.save(new GameEntity(gameId, player, world));
+        }
+        else {
+            throw new RuntimeException("Игра с таким gameId уже существует. Измените имя");
+        }
     }
 
     @Override
@@ -51,44 +50,34 @@ public class GameServiceImpl implements GameService {
             throw GameNotFoundException(gameId);
         return snaps.getLast();
     }
-//
-//    public Game findGameSnapshotById(Long id) {
-//        //return gameRepository.read(id).orElseThrow(() -> GameNotFoundException(id));
-//        return null;
-//    }
-//
+
+    public GameEntity findGameSnapshotById(Long id) {
+        return gameEntityRepository.findById(id).orElseThrow(() -> GameNotFoundException(id));
+    }
+
     private RuntimeException GameNotFoundException(String gameId) {
         return new RuntimeException("Game not found, gameId=" + gameId);
     }
 
     private RuntimeException GameNotFoundException(Long id) {
-        return new RuntimeException("Game snapshot with id=" + id + " not found");
+        return new RuntimeException("Game snapshot not found, id=" + id);
     }
 
     @Override
     public void deleteByGameId(String gameId) {
-        var snaps = gameEntityRepository.findAllByGameId(gameId);
-        for(var i = 0; i < snaps.size(); i++){
-            worldRepository.deleteById(snaps.get(i).getWorld().getId());
-            playerRepository.deleteById(snaps.get(i).getPlayer().get);
-        }
+        gameEntityRepository.deleteAllByGameId(gameId);
     }
-//
-//    public void deleteGameSnapshotById(Long id){
-//        //gameRepository.deleteGameSnapshot(id);
-//    }
-//
+
     @Override
     public GameEntity updateGameWithPlayerMove(Long id, String direction) {
-        return null;
-//        var game = findGameSnapshotById(id);
-//        var copy = game.deepCopy();
-//        var status = copy.tryMovePlayer(Game.Direction.valueOf(direction));
-//        if(status){
-//            //gameRepository.update(copy);
-//            return copy;
-//        }
-//        return game;
+        var game = findGameSnapshotById(id);
+        var copy = game.deepCopy();
+        var status = copy.tryMovePlayer(Direction.valueOf(direction));
+        if(status){
+            gameEntityRepository.save(copy);
+            return copy;
+        }
+        return game;
     }
 
     @PostConstruct

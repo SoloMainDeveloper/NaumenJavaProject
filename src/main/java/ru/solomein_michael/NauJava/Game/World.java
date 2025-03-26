@@ -23,6 +23,13 @@ public class World {
         mapJson = new Gson().toJson(map);
     }
 
+    @PostLoad
+    private void initMapFromJson() {
+        if (mapJson != null) {
+            this.map = new Gson().fromJson(mapJson, MapCell[][].class);
+        }
+    }
+
     public String getMapJson() {
         return mapJson;
     }

@@ -12,10 +12,10 @@ public class GameEntity {
 
     String gameId;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     Player player;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     World world;
 
     public GameEntity(){
@@ -26,6 +26,39 @@ public class GameEntity {
         this.player = player;
         this.world = world;
 
+    }
+
+    public GameEntity deepCopy(){
+        var copiedPlayer = this.player.deepCopy();
+        var map = world.getMap();
+        var copiedMap = new MapCell[map.length][];
+        for (int i = 0; i < map.length; i++) {
+            copiedMap[i] = new MapCell[map[i].length];
+            for (int j = 0; j < map[i].length; j++) {
+                copiedMap[i][j] = map[i][j] != null ? map[i][j].deepCopy() : null;
+            }
+        }
+        return new GameEntity(gameId, copiedPlayer, new World(copiedMap));
+    }
+
+    public boolean tryMovePlayer(Direction dir){
+        return switch(dir){
+            case Down -> tryMovePlayer(0, 1);
+            case Up -> tryMovePlayer(0, -1);
+            case Left -> tryMovePlayer(-1, 0);
+            case Right -> tryMovePlayer(1, 0);
+        };
+    }
+
+    private boolean tryMovePlayer(int x, int y){
+        var currentY = player.getPosY();
+        var currentX = player.getPosX();
+        var map = world.getMap();
+        if(currentY + y >= 0 && currentY + y <= map.length - 1 && currentX + x >= 0 && currentX + x <= map[currentY].length - 1){
+            player.updatePos(currentX + x, currentY + y);
+            return true;
+        }
+        return false;
     }
 
     public Long getId() {
