@@ -2,7 +2,7 @@ package ru.solomein_michael.NauJava.InpOut;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.solomein_michael.NauJava.Game.GameEntity;
+import ru.solomein_michael.NauJava.Game.Game;
 import ru.solomein_michael.NauJava.Service.GameServiceImpl;
 
 import java.util.Objects;
@@ -10,7 +10,7 @@ import java.util.Objects;
 @Component
 public class CommandProcessor {
     private final GameServiceImpl gameService;
-    private GameEntity currentGame;
+    private Game currentGame;
     private boolean isGameStarted;
 
     @Autowired

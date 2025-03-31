@@ -1,11 +1,10 @@
 package ru.solomein_michael.NauJava.Game;
 
-import com.google.gson.Gson;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "games")
-public class GameEntity {
+public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -18,17 +17,17 @@ public class GameEntity {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     World world;
 
-    public GameEntity(){
+    public Game(){
     }
 
-    public GameEntity(String gameId, Player player, World world){
+    public Game(String gameId, Player player, World world){
         this.gameId = gameId;
         this.player = player;
         this.world = world;
 
     }
 
-    public GameEntity deepCopy(){
+    public Game deepCopy(){
         var copiedPlayer = this.player.deepCopy();
         var map = world.getMap();
         var copiedMap = new MapCell[map.length][];
@@ -38,7 +37,7 @@ public class GameEntity {
                 copiedMap[i][j] = map[i][j] != null ? map[i][j].deepCopy() : null;
             }
         }
-        return new GameEntity(gameId, copiedPlayer, new World(copiedMap));
+        return new Game(gameId, copiedPlayer, new World(copiedMap));
     }
 
     public boolean tryMovePlayer(Direction dir){
