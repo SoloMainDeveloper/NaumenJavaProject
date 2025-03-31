@@ -1,10 +1,10 @@
 package ru.solomein_michael.NauJava.Service;
 
-import ru.solomein_michael.NauJava.Game.GameEntity;
+import ru.solomein_michael.NauJava.Game.Game;
 
 public interface GameService {
     void createGame(String gameId, String playerName);
-    GameEntity findLastByGameId(String gameId);
+    Game findLastByGameId(String gameId);
     void deleteByGameId(String gameId);
-    GameEntity updateGameWithPlayerMove(Long id, String direction);
+    Game updateGameWithPlayerMove(Long id, String direction);
 }
