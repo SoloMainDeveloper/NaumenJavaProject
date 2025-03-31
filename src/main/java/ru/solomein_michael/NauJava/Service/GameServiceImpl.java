@@ -4,12 +4,18 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.solomein_michael.NauJava.Game.Game;
-import ru.solomein_michael.NauJava.Repository.GameRepository;
+import ru.solomein_michael.NauJava.Game.*;
+import ru.solomein_michael.NauJava.Repository.GameEntityRepository;
+import ru.solomein_michael.NauJava.Repository.PlayerRepository;
+import ru.solomein_michael.NauJava.Repository.WorldRepository;
+//import ru.solomein_michael.NauJava.Repository.GameRepository;
+
 
 @Service
 public class GameServiceImpl implements GameService {
-    private final GameRepository gameRepository;
+    private final GameEntityRepository gameEntityRepository;
+    private final PlayerRepository playerRepository;
+    private final WorldRepository worldRepository;
 
     @Value("${app.name}")
     private String appName;
@@ -18,15 +24,19 @@ public class GameServiceImpl implements GameService {
     private String appVersion;
 
     @Autowired
-    public GameServiceImpl(GameRepository gameRepository) {
-        this.gameRepository = gameRepository;
+    public GameServiceImpl(GameEntityRepository gameEntityRepository, PlayerRepository playerRepository, WorldRepository worldRepository) {
+        this.gameEntityRepository = gameEntityRepository;
+        this.playerRepository = playerRepository;
+        this.worldRepository = worldRepository;
     }
 
     @Override
     public void createGame(String gameId, String playerName) {
-        var snap = gameRepository.read(gameId);
-        if(snap.isEmpty()) {
-            gameRepository.create(new Game(gameId, playerName));
+        var snap = gameEntityRepository.findOneByGameId(gameId);
+        if(snap == null) {
+            var player = new Player(playerName, 0, 0);
+            var world = new World(new MapCell[3][3]);
+            gameEntityRepository.save(new GameEntity(gameId, player, world));
         }
         else {
             throw new RuntimeException("Игра с таким gameId уже существует. Измените имя");
@@ -34,12 +44,15 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game findLastByGameId(String gameId) {
-        return gameRepository.read(gameId).orElseThrow(() -> GameNotFoundException(gameId));
+    public GameEntity findLastByGameId(String gameId) {
+        var snaps = gameEntityRepository.findAllByGameId(gameId);
+        if(snaps.isEmpty())
+            throw GameNotFoundException(gameId);
+        return snaps.getLast();
     }
 
-    public Game findGameSnapshotById(Long id) {
-        return gameRepository.read(id).orElseThrow(() -> GameNotFoundException(id));
+    public GameEntity findGameSnapshotById(Long id) {
+        return gameEntityRepository.findById(id).orElseThrow(() -> GameNotFoundException(id));
     }
 
     private RuntimeException GameNotFoundException(String gameId) {
@@ -47,25 +60,21 @@ public class GameServiceImpl implements GameService {
     }
 
     private RuntimeException GameNotFoundException(Long id) {
-        return new RuntimeException("Game snapshot with id=" + id + " not found");
+        return new RuntimeException("Game snapshot not found, id=" + id);
     }
 
     @Override
     public void deleteByGameId(String gameId) {
-        gameRepository.deleteByGameId(gameId);
-    }
-
-    public void deleteGameSnapshotById(Long id){
-        gameRepository.deleteGameSnapshot(id);
+        gameEntityRepository.deleteAllByGameId(gameId);
     }
 
     @Override
-    public Game updateGameWithPlayerMove(Long id, String direction) {
+    public GameEntity updateGameWithPlayerMove(Long id, String direction) {
         var game = findGameSnapshotById(id);
         var copy = game.deepCopy();
-        var status = copy.tryMovePlayer(Game.Direction.valueOf(direction));
+        var status = copy.tryMovePlayer(Direction.valueOf(direction));
         if(status){
-            gameRepository.update(copy);
+            gameEntityRepository.save(copy);
             return copy;
         }
         return game;

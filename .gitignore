@@ -38,3 +38,4 @@ build/
 /mvnw.cmd
 /pom.xml
 /src/test/java/ru/solomein_michael/NauJava/NauJavaApplicationTests.java
+/src/main/resources/application.properties
