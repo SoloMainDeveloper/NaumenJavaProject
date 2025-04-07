@@ -1,8 +1,8 @@
-package ru.solomein_michael.NauJava.Repository;
+package ru.solomein_michael.NauJava.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import ru.solomein_michael.NauJava.Game.Game;
+import ru.solomein_michael.NauJava.game.Game;
 
 import java.util.List;
 

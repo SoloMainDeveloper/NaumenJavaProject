@@ -1,4 +1,4 @@
-package ru.solomein_michael.NauJava.InpOut;
+package ru.solomein_michael.NauJava.processor;
 
 import java.util.Scanner;
 import org.springframework.beans.factory.annotation.Autowired;

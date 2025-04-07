@@ -1,9 +1,9 @@
-package ru.solomein_michael.NauJava.InpOut;
+package ru.solomein_michael.NauJava.processor;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.solomein_michael.NauJava.Game.Game;
-import ru.solomein_michael.NauJava.Service.GameServiceImpl;
+import ru.solomein_michael.NauJava.game.Game;
+import ru.solomein_michael.NauJava.service.GameServiceImpl;
 
 import java.util.Objects;
 

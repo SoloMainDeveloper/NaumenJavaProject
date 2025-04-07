@@ -1,19 +1,19 @@
-package ru.solomein_michael.NauJava.Service;
+package ru.solomein_michael.NauJava.service;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.solomein_michael.NauJava.Game.*;
-import ru.solomein_michael.NauJava.Repository.GameRepository;
-import ru.solomein_michael.NauJava.Repository.PlayerRepository;
-import ru.solomein_michael.NauJava.Repository.WorldRepository;
-//import ru.solomein_michael.NauJava.Repository.GameRepository;
+import ru.solomein_michael.NauJava.game.*;
+import ru.solomein_michael.NauJava.repository.GameRepository;
+import ru.solomein_michael.NauJava.repository.PlayerRepository;
+import ru.solomein_michael.NauJava.repository.WorldRepository;
 
+import java.util.List;
 
 @Service
 public class GameServiceImpl implements GameService {
-    private final GameRepository gameEntityRepository;
+    private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
     private final WorldRepository worldRepository;
 
@@ -24,19 +24,19 @@ public class GameServiceImpl implements GameService {
     private String appVersion;
 
     @Autowired
-    public GameServiceImpl(GameRepository gameEntityRepository, PlayerRepository playerRepository, WorldRepository worldRepository) {
-        this.gameEntityRepository = gameEntityRepository;
+    public GameServiceImpl(GameRepository gameRepository, PlayerRepository playerRepository, WorldRepository worldRepository) {
+        this.gameRepository = gameRepository;
         this.playerRepository = playerRepository;
         this.worldRepository = worldRepository;
     }
 
     @Override
     public void createGame(String gameId, String playerName) {
-        var snap = gameEntityRepository.findFirstByGameId(gameId);
+        var snap = gameRepository.findFirstByGameId(gameId);
         if(snap == null) {
             var player = new Player(playerName, 0, 0);
             var world = new World(new MapCell[3][3]);
-            gameEntityRepository.save(new Game(gameId, player, world));
+            gameRepository.save(new Game(gameId, player, world));
         }
         else {
             throw new RuntimeException("Игра с таким gameId уже существует. Измените имя");
@@ -45,14 +45,14 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game findLastByGameId(String gameId) {
-        var snaps = gameEntityRepository.findAllByGameId(gameId);
+        var snaps = gameRepository.findAllByGameId(gameId);
         if(snaps.isEmpty())
             throw GameNotFoundException(gameId);
         return snaps.getLast();
     }
 
     public Game findGameSnapshotById(Long id) {
-        return gameEntityRepository.findById(id).orElseThrow(() -> GameNotFoundException(id));
+        return gameRepository.findById(id).orElseThrow(() -> GameNotFoundException(id));
     }
 
     private RuntimeException GameNotFoundException(String gameId) {
@@ -65,7 +65,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void deleteByGameId(String gameId) {
-        gameEntityRepository.deleteAllByGameId(gameId);
+        gameRepository.deleteAllByGameId(gameId);
     }
 
     @Override
@@ -74,10 +74,29 @@ public class GameServiceImpl implements GameService {
         var copy = game.deepCopy();
         var status = copy.tryMovePlayer(Direction.valueOf(direction));
         if(status){
-            gameEntityRepository.save(copy);
+            gameRepository.save(copy);
             return copy;
         }
         return game;
+    }
+
+    @Override
+    public List<Game> findAllByGameId(String gameId){
+        return gameRepository.findAllByGameId(gameId);
+    }
+
+    @Override
+    public Game findFirstByGameId(String gameId){
+        var game = gameRepository.findFirstByGameId(gameId);
+        if (game == null) {
+            throw new RuntimeException("Game not found with gameId=" + gameId);
+        }
+        return game;
+    }
+
+    @Override
+    public List<Game> findAll(){
+        return gameRepository.findAll();
     }
 
     @PostConstruct

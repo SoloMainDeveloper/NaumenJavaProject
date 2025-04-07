@@ -33,9 +33,9 @@
     <tbody>
     <tr th:each="game : ${games}">
         <td th:text="${game.gameId}"></td>
-        <td th:text="${game.player.name}"></td>
-        <td th:text="${game.player.posX}"></td>
-        <td th:text="${game.player.posY}"></td>
+        <td th:text="${game.playerName}"></td>
+        <td th:text="${game.playerPosX}"></td>
+        <td th:text="${game.playerPosY}"></td>
     </tr>
     </tbody>
 </table>
