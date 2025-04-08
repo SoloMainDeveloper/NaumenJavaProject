@@ -7,12 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ru.solomein_michael.NauJava.game.Game;
 import ru.solomein_michael.NauJava.service.GameService;
 import ru.solomein_michael.NauJava.dto.GameDto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Controller

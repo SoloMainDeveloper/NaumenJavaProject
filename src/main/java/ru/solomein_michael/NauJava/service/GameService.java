@@ -1,7 +1,6 @@
 package ru.solomein_michael.NauJava.service;
 
-import ru.solomein_michael.NauJava.dto.GameDto;
-import ru.solomein_michael.NauJava.game.Game;
+import ru.solomein_michael.NauJava.entity.Game;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package ru.solomein_michael.NauJava.game;
+package ru.solomein_michael.NauJava.entity;
 
 public enum Direction {
     Right("right"),
