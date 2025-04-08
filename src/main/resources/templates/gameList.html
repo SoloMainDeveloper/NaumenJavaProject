@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Game List</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<h1>Game List</h1>
+<table>
+    <thead>
+    <tr>
+        <th>GameID</th>
+        <th>Player name</th>
+        <th>Pos X</th>
+        <th>Pos Y</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="game : ${games}">
+        <td th:text="${game.gameId}"></td>
+        <td th:text="${game.playerName}"></td>
+        <td th:text="${game.playerPosX}"></td>
+        <td th:text="${game.playerPosY}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
