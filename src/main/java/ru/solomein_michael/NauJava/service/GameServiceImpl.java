@@ -4,7 +4,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.solomein_michael.NauJava.game.*;
+import ru.solomein_michael.NauJava.entity.*;
 import ru.solomein_michael.NauJava.repository.GameRepository;
 import ru.solomein_michael.NauJava.repository.PlayerRepository;
 import ru.solomein_michael.NauJava.repository.WorldRepository;

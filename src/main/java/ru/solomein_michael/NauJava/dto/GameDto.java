@@ -1,8 +1,7 @@
 package ru.solomein_michael.NauJava.dto;
 
-import com.google.gson.Gson;
-import ru.solomein_michael.NauJava.game.Game;
-import ru.solomein_michael.NauJava.game.MapCell;
+import ru.solomein_michael.NauJava.entity.Game;
+import ru.solomein_michael.NauJava.entity.MapCell;
 
 public class GameDto {
     public String gameId;
