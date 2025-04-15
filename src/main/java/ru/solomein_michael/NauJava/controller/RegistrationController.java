@@ -4,14 +4,16 @@ import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.client.RestTemplate;
 import ru.solomein_michael.NauJava.entity.CustomUserDetails;
-import ru.solomein_michael.NauJava.service.UserService;
 
 @Controller
 public class RegistrationController {
     @Autowired
-    private UserService userService;
+    private RestTemplate restTemplate;
 
     @GetMapping("/registration")
     public String registration()
@@ -20,18 +22,14 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public String addUser(CustomUserDetails user, Model model)
-    {
-        try
-        {
-            userService.addUser(user);
-            return "redirect:/login";
-        }
-        catch (Exception ex)
-        {
-            model.addAttribute("message", "User exists");
+    public String registerUser(@ModelAttribute("user") CustomUserDetails user, Model model) {
+        var response = restTemplate.postForEntity("http://localhost:8080/api/register", user, CustomUserDetails.class);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            model.addAttribute("message", "User registered successfully!");
+            return "registrationSuccess";
+        } else {
+            model.addAttribute("error", "Registration failed: " + response.getBody());
             return "registration";
         }
     }
-
 }

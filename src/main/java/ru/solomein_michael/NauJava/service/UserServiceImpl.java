@@ -19,14 +19,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addUser(UserDetails user) {
         if(userRepository.findByUsername(user.getUsername()) != null)
-            return;
+            throw UserAlreadyExistsException(user.getUsername());
         userRepository.save(new User(user.getUsername(), passwordEncoder.encode(user.getPassword()), Role.USER));
     }
 
     @Override
     public void addUser(String username, String password, Role role) {
         if(userRepository.findByUsername(username) != null)
-            return;
+            throw UserAlreadyExistsException(username);
         userRepository.save(new User(username, password, role));
+    }
+
+    private RuntimeException UserAlreadyExistsException(String username) {
+        return new RuntimeException("User with username = '" + username + "' already exists");
     }
 }
