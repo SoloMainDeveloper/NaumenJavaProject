@@ -99,6 +99,11 @@ public class GameServiceImpl implements GameService {
         return gameRepository.findAll();
     }
 
+    @Override
+    public int getCount() {
+        return findAll().size();
+    }
+
     @PostConstruct
     public void init(){
         System.out.println("Приложение " + appName + ", Версия " + appVersion);

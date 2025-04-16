@@ -6,4 +6,5 @@ import ru.solomein_michael.NauJava.entity.Role;
 public interface UserService {
     void addUser(UserDetails user);
     void addUser(String username, String password, Role role);
+    int getCount();
 }
