@@ -10,11 +10,9 @@ public class Report {
     private Long id;
 
     private ReportStatus status;
-    private String content;
 
-    private Long firstPartCreatingTime;
-    private Long secondPartCreatingTime;
-    private Long totalCreatingTime;
+    @Column(length = 2048)
+    private String content;
 
     public Report(){
         this.status = ReportStatus.CREATED;
@@ -36,27 +34,7 @@ public class Report {
         return id;
     }
 
-    public Long getFirstPartCreatingTime(){
-        return firstPartCreatingTime;
-    }
-
-    public Long getSecondPartCreatingTime(){
-        return secondPartCreatingTime;
-    }
-
-    public Long getTotalCreatingTime(){
-        return totalCreatingTime;
-    }
-
-    public void setFirstPartCreatingTime(Long firstPartCreatingTime) {
-        this.firstPartCreatingTime = firstPartCreatingTime;
-    }
-
-    public void setSecondPartCreatingTime(Long secondPartCreatingTime) {
-        this.secondPartCreatingTime = secondPartCreatingTime;
-    }
-
-    public void setTotalCreatingTime(Long totalCreatingTime) {
-        this.totalCreatingTime = totalCreatingTime;
+    public void setContent(String content) {
+        this.content = content;
     }
 }
