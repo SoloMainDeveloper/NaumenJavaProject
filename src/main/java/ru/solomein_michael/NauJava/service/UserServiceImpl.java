@@ -30,6 +30,11 @@ public class UserServiceImpl implements UserService {
         userRepository.save(new User(username, password, role));
     }
 
+    @Override
+    public int getCount() {
+        return userRepository.findAll().size();
+    }
+
     private RuntimeException UserAlreadyExistsException(String username) {
         return new RuntimeException("User with username = '" + username + "' already exists");
     }

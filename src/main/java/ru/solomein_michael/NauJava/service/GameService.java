@@ -12,4 +12,5 @@ public interface GameService {
     List<Game> findAllByGameId(String gameId);
     Game findFirstByGameId(String gameId);
     List<Game> findAll();
+    int getCount();
 }

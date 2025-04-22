@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Report</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<h1>Report</h1>
+<table>
+    <thead>
+    <tr>
+        <th>User Count</th>
+        <th>firstPartCreatingTime</th>
+        <th>secondPartCreatingTime</th>
+        <th>totalCreatingTime</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td th:text="${reportContent.userCount}"></td>
+        <td th:text="${reportContent.firstPartCreatingTime}"></td>
+        <td th:text="${reportContent.secondPartCreatingTime}"></td>
+        <td th:text="${reportContent.totalCreatingTime}"></td>
+    </tr>
+    </tbody>
+    <thead>
+    <tr>
+        <th>GameID</th>
+        <th>Player name</th>
+        <th>Pos X</th>
+        <th>Pos Y</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="game : ${reportContent.games}">
+        <td th:text="${game.gameId}"></td>
+        <td th:text="${game.playerName}"></td>
+        <td th:text="${game.playerPosX}"></td>
+        <td th:text="${game.playerPosY}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
