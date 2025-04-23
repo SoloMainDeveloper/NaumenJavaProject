@@ -22,16 +22,16 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
     {
         http.authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/registration", "/login", "/logout")
+                        .requestMatchers("/registration", "/login", "/logout", "/api/register")
                         .permitAll()
                         .requestMatchers("/delete/**").hasRole("ADMIN")
                         .requestMatchers("/create/**").hasAuthority("CREATOR")
                         .requestMatchers("/swagger-ui/index.html").hasRole("ADMIN")
-                        .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults());
+                        .anyRequest().authenticated()).formLogin((form) -> form
+                        .defaultSuccessUrl("/home", true)
+                        .permitAll());
         return http.build();
     }
-
 }
 
 

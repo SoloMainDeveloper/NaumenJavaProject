@@ -8,6 +8,7 @@ import ru.solomein_michael.NauJava.entity.Role;
 import ru.solomein_michael.NauJava.entity.User;
 import ru.solomein_michael.NauJava.repository.UserRepository;
 
+
 @Component
 public class UserServiceImpl implements UserService {
     @Autowired
