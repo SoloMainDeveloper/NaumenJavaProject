@@ -22,7 +22,7 @@ public class SeleniumTestUI {
 
     private void sleep(int millis){
         try{
-            driver.wait(millis);
+            Thread.sleep(millis);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -52,13 +52,7 @@ public class SeleniumTestUI {
         sleep(2000);
 
         assertTrue(driver.getCurrentUrl().contains("/login"));
-        assertTrue(driver.findElement(By.id("loginForm")).isDisplayed());
+        assertTrue(driver.findElement(By.className("login-form")).isDisplayed());
+        driver.quit();
     }
-
-//    @AfterEach
-//    public void tearDown() {
-//        if (driver != null) {
-//            driver.quit();
-//        }
-//    }
 }
